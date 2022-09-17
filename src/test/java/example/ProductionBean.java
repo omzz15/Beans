@@ -1,2 +1,7 @@
-package PACKAGE_NAME;public class ProductionBean {
+package example;
+
+import om.self.beans.Profile;
+
+@Profile("production")
+public class ProductionBean extends DefaultBean{
 }

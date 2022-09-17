@@ -1,2 +1,7 @@
-package PACKAGE_NAME;public class TestBean2 {
+package example;
+
+import om.self.beans.Bean;
+
+@Bean
+public class TestBean2 {
 }

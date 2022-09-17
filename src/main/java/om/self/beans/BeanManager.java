@@ -7,18 +7,18 @@ import java.util.Map.Entry;
 
 import org.reflections.Reflections;
 
-public class ContextManager {
-    private static ContextManager contextManager = new ContextManager();
+public class BeanManager {
+    private static final BeanManager beanManager = new BeanManager();
 
     private String targetPackage = "com";
     private String profile = "default";
     private final Hashtable<Class<?>, Object> beans = new Hashtable<>();
+    private final Hashtable<Class<?>, Object> rawBeans = new Hashtable<>();
     private final Set<Class<?>> beanClasses = new HashSet<>();
 
-    private final Set<Class<?>> loadLast = new HashSet<>();
 
-    public static ContextManager getInstance() {
-        return contextManager;
+    public static BeanManager getInstance() {
+        return beanManager;
     }
 
     public String getTargetPackage() {
@@ -51,16 +51,29 @@ public class ContextManager {
         return beans.containsKey(cls);
     }
 
-    public void addBean(Object instance){
-        if(beans.containsKey(instance.getClass())) throw new IllegalArgumentException("A instance of '" + instance.getClass().getName() + "' already exists so bean could not be added");
-        beans.put(instance.getClass(), instance);
+    public void addBean(Object bean, boolean runInLoad){
+        Class<?> cls = bean.getClass();
+        if(runInLoad)
+            if(rawBeans.containsKey(cls)) throw new IllegalArgumentException("A instance of '" + cls.getName() + "' already exists in rawBeans so bean could not be added");
+            else rawBeans.put(cls, bean);
+        else
+        if(beans.containsKey(cls)) throw new IllegalArgumentException("A instance of '" + cls.getName() + "' already exists in beans so bean could not be added");
+        else beans.put(cls, bean);
     }
 
-    public void addBean(Class<?> cls) {
-        if(beans.containsKey(cls)) throw new IllegalArgumentException("A instance of '" + cls.getName() + "' already exists so bean could not be added");
+    /**
+     * method to instantiate a bean based on class
+     * @param runInLoad weather to run dependency injection during {@link BeanManager#load()}
+     * @param cls the class of the bean you want to instantiate
+     */
+    public void addBean(Class<?> cls, boolean runInLoad) {
+        addBean(makeRawBean(cls), runInLoad);
+    }
+
+    private Object makeRawBean(Class<?> cls){
         Object obj;
         try{
-            obj = cls.getConstructor(ContextManager.class).newInstance(this);
+            obj = cls.getConstructor(BeanManager.class).newInstance(this);
         }
         catch (Exception e) {
             try {
@@ -71,9 +84,13 @@ public class ContextManager {
                 throw new ExceptionInInitializerError("there was a problem when creating an instance of " + cls.getName());
             }
         }
-        beans.put(cls, obj);
+        return obj;
     }
 
+    /**
+     * get the classes of the beans that are going to be loaded. if you want to get the classes of loaded beans call {@link BeanManager#getBeans()} and get the keySet
+     * @return the class of pending beans
+     */
     public Set<Class<?>> getBeanClasses() {
         return beanClasses;
     }
@@ -85,37 +102,64 @@ public class ContextManager {
     public void load() {
         Reflections ref = new Reflections(targetPackage);
 
-        //load all beans
+        //load all bean classes
         for (Class<?> cls : ref.getTypesAnnotatedWith(Bean.class)){
             Profile profileAnnotation = cls.getAnnotation(Profile.class);
             if(profileAnnotation != null && !profile.equals(profileAnnotation.value())) continue;
             addBeanClass(cls);
-            addBean(cls);
         }
 
-        //auto wire beans
+        //make raw beans
+        beanClasses.forEach((cls) -> addBean(cls, true));
+        beanClasses.clear();
+
+        //get auto wire methods
         Hashtable<Object, List<Method>> autoWireMethods = new Hashtable<>();
-        for (Entry<Class<?>, Object> entry : beans.entrySet()) {
-            Object val = entry.getValue();
-            for(Method m : entry.getKey().getMethods())
-                if(m.isAnnotationPresent(Autowired.class))
-                    if(!autoWireMethods.containsKey(val))
-                        autoWireMethods.put(val, new LinkedList<>(Collections.singletonList(m)));
-                    else
-                        autoWireMethods.get(val).add(m);
-        }
+        rawBeans.forEach((cls, obj) -> autoWireMethods.put(obj, getAutoWireMethods(cls)));
 
-        for(Entry<Object, List<Method>> entry : autoWireMethods.entrySet()){
-            for(Method m : entry.getValue()) {
-                List<Object> params = new LinkedList<>();
-                for (Parameter p : m.getParameters()) {
-                    Object obj = beans.get(p.getType());
+        //auto wire
+        while (!autoWireMethods.isEmpty()){
+            List<Object> completedBeans = new LinkedList<>();
+            //try to wire all methods in a bean
+            for (Entry<Object, List<Method>> entry : autoWireMethods.entrySet()) {
+                Object key = entry.getKey();
+                entry.getValue().removeIf(m -> loadMethod(m, key, beans.values()));
+                if (entry.getValue().isEmpty())
+                    completedBeans.add(key);
+            }
+            //remove completed beans from raw and add them to the final bean list
+            for (Object bean: completedBeans) {
+                autoWireMethods.remove(bean);
+                rawBeans.remove(bean.getClass());
+                addBean(bean, false);
+            }
+            //if no new beans were completed then it will run forever
+            if(completedBeans.isEmpty()) throw new ExceptionInInitializerError("unable to auto-wire the following: " + autoWireMethods.entrySet() + "\n[TIP] check for circular dependencies or dependencies that arent loaded");
+        }
+    }
+
+    private List<Method> getAutoWireMethods(Class<?> cls){
+        List<Method> methods = new LinkedList<>();
+        for(Method m : cls.getMethods())
+            if(m.isAnnotationPresent(Autowired.class))
+                methods.add(m);
+        return methods;
+    }
+
+    private boolean loadMethod(Method m, Object methodObj, Collection<Object> repo){
+        List<Object> params = new LinkedList<>();
+        for (Parameter param : m.getParameters()) {
+            Class<?> paramCls = param.getType();
+            for (Object obj : repo){
+                if (paramCls.isInstance(obj)) {
                     params.add(obj);
+                    break;
                 }
-                try {
-                    m.invoke(entry.getKey(), params);
-                }catch (Exception e){}
             }
         }
+        try {
+            m.invoke(methodObj, params.toArray());
+        }catch (Exception e){return false;}
+        return true;
     }
 }

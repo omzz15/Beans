@@ -1,8 +1,10 @@
+package example;
+
 import om.self.beans.BeanManager;
 
-public class BeansTest {
+public class Example {
     public static void main(String[] args) {
-        BeanManager.getInstance().setTargetPackage("om.self.beans");
+        BeanManager.getInstance().setTargetPackage("example");
         BeanManager.getInstance().setProfile("production");
         BeanManager.getInstance().load();
 

@@ -1,6 +1,10 @@
-package om.self.ezftc.core;
+package om.self.beans;
 
-@Deprecated
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+@Retention(RetentionPolicy.RUNTIME)
 public @interface Profile {
-    public String profile() default "";
+    String value();
 }

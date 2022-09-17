@@ -1,4 +1,4 @@
-package om.self.ezftc.core;
+package om.self.beans;
 
 public @interface Bean {
 }
