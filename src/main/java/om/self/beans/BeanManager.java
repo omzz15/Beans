@@ -12,6 +12,7 @@ public class BeanManager {
 
     private String targetPackage = "com";
     private String profile = "default";
+    private FailurePolicy duplicateBeanPolicy = FailurePolicy.EXCEPTION;
     private final Hashtable<Class<?>, Object> beans = new Hashtable<>();
     private final Hashtable<Class<?>, Object> rawBeans = new Hashtable<>();
     private final Set<Class<?>> beanClasses = new HashSet<>();
@@ -39,6 +40,15 @@ public class BeanManager {
         this.profile = profile;
     }
 
+    public FailurePolicy getDuplicateBeanPolicy() {
+        return duplicateBeanPolicy;
+    }
+
+    public void setDuplicateBeanPolicy(FailurePolicy duplicateBeanPolicy) {
+        if(duplicateBeanPolicy == null) throw new IllegalArgumentException("duplicateBeanPolicy can not be null");
+        this.duplicateBeanPolicy = duplicateBeanPolicy;
+    }
+
     public Hashtable<Class<?>, Object> getBeans() {
         return beans;
     }
@@ -52,13 +62,21 @@ public class BeanManager {
     }
 
     public void addBean(Object bean, boolean runInLoad){
-        Class<?> cls = bean.getClass();
         if(runInLoad)
-            if(rawBeans.containsKey(cls)) throw new IllegalArgumentException("A instance of '" + cls.getName() + "' already exists in useRawBeans so bean could not be added");
-            else rawBeans.put(cls, bean);
+            addToRawBeans(bean);
         else
-        if(beans.containsKey(cls)) throw new IllegalArgumentException("A instance of '" + cls.getName() + "' already exists in beans so bean could not be added");
-        else beans.put(cls, bean);
+            addToBeans(bean);
+    }
+
+    private void addToRawBeans(Object bean){
+        if(rawBeans.containsKey(bean.getClass()))
+            duplicateBeanPolicy.run(new IllegalArgumentException("A instance of '" + bean.getClass().getName() + "' already exists in raw beans so bean could not be added"));
+        else rawBeans.put(bean.getClass(), bean);
+    }
+    private void addToBeans(Object bean){
+        if(beans.containsKey(bean.getClass()))
+            duplicateBeanPolicy.run(new IllegalArgumentException("A instance of '" + bean.getClass().getName() + "' already exists in beans so bean could not be added"));
+        else beans.put(bean.getClass(), bean);
     }
 
     /**
@@ -169,5 +187,14 @@ public class BeanManager {
             m.invoke(methodObj, params.toArray());
         }catch (Exception e){return false;}
         return true;
+    }
+
+    public enum FailurePolicy{
+        QUIET,
+        EXCEPTION;
+
+        public<T extends Throwable> void run(T e) throws T {
+            if(this == EXCEPTION) throw e;
+        }
     }
 }
