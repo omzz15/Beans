@@ -4,21 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7b62fc31-ec9c-4a4e-94be-8f8d714b71de" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="7b62fc31-ec9c-4a4e-94be-8f8d714b71de" name="Changes" comment="updated pom.xml">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/Autowired.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/Autowired.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/Bean.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/Bean.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/BeanManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/BeanManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/Profile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/Profile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/example/DefaultBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/example/DefaultBean.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/example/Example.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/example/Example.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/example/ProductionBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/example/ProductionBean.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/example/SnapshotBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/example/SnapshotBean.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/example/TestBean1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/example/TestBean1.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/example/TestBean2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/example/TestBean2.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/example/TestBean3.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/example/TestBean3.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,6 +72,14 @@
       <option name="presentableId" value="Default" />
       <updated>1663351559206</updated>
     </task>
+    <task id="LOCAL-00001" summary="updated pom.xml">
+      <created>1663435343121</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1663435343121</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -93,5 +92,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="updated pom.xml" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated pom.xml" />
   </component>
 </project>

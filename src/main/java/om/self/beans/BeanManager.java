@@ -54,7 +54,7 @@ public class BeanManager {
     public void addBean(Object bean, boolean runInLoad){
         Class<?> cls = bean.getClass();
         if(runInLoad)
-            if(rawBeans.containsKey(cls)) throw new IllegalArgumentException("A instance of '" + cls.getName() + "' already exists in rawBeans so bean could not be added");
+            if(rawBeans.containsKey(cls)) throw new IllegalArgumentException("A instance of '" + cls.getName() + "' already exists in useRawBeans so bean could not be added");
             else rawBeans.put(cls, bean);
         else
         if(beans.containsKey(cls)) throw new IllegalArgumentException("A instance of '" + cls.getName() + "' already exists in beans so bean could not be added");
@@ -117,13 +117,21 @@ public class BeanManager {
         Hashtable<Object, List<Method>> autoWireMethods = new Hashtable<>();
         rawBeans.forEach((cls, obj) -> autoWireMethods.put(obj, getAutoWireMethods(cls)));
 
+        //create list of all beans
+        Set<Object> allBeans = new HashSet<>(rawBeans.values());
+        allBeans.addAll(beans.values());
+
         //auto wire
         while (!autoWireMethods.isEmpty()){
             List<Object> completedBeans = new LinkedList<>();
             //try to wire all methods in a bean
             for (Entry<Object, List<Method>> entry : autoWireMethods.entrySet()) {
                 Object key = entry.getKey();
-                entry.getValue().removeIf(m -> loadMethod(m, key, beans.values()));
+                entry.getValue().removeIf(m -> {
+                    if(m.getAnnotation(Autowired.class).useRawBeans())
+                        return loadMethod(m, key, allBeans);
+                    return loadMethod(m, key, beans.values());
+                });
                 if (entry.getValue().isEmpty())
                     completedBeans.add(key);
             }
