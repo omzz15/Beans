@@ -13,6 +13,7 @@ public class BeanManager {
     private String targetPackage = "com";
     private String profile = "default";
     private FailurePolicy duplicateBeanPolicy = FailurePolicy.EXCEPTION;
+    private DuplicateAutoWirePolicy duplicateAutoWirePolicy = DuplicateAutoWirePolicy.PROFILE_WITH_EXCEPTION;
     private final Hashtable<Class<?>, Object> beans = new Hashtable<>();
     private final Hashtable<Class<?>, Object> rawBeans = new Hashtable<>();
     private final Set<Class<?>> beanClasses = new HashSet<>();
@@ -47,6 +48,15 @@ public class BeanManager {
     public void setDuplicateBeanPolicy(FailurePolicy duplicateBeanPolicy) {
         if(duplicateBeanPolicy == null) throw new IllegalArgumentException("duplicateBeanPolicy can not be null");
         this.duplicateBeanPolicy = duplicateBeanPolicy;
+    }
+
+    public DuplicateAutoWirePolicy getDuplicateAutoWirePolicy() {
+        return duplicateAutoWirePolicy;
+    }
+
+    public void setDuplicateAutoWirePolicy(DuplicateAutoWirePolicy duplicateAutoWirePolicy) {
+        if(duplicateAutoWirePolicy == null) throw new IllegalArgumentException("duplicateAutoWirePolicy can not be null");
+        this.duplicateAutoWirePolicy = duplicateAutoWirePolicy;
     }
 
     public Hashtable<Class<?>, Object> getBeans() {
@@ -147,8 +157,8 @@ public class BeanManager {
                 Object key = entry.getKey();
                 entry.getValue().removeIf(m -> {
                     if(m.getAnnotation(Autowired.class).useRawBeans())
-                        return loadMethod(m, key, allBeans);
-                    return loadMethod(m, key, beans.values());
+                        return loadMethod(m, key, allBeans, true);
+                    return loadMethod(m, key, beans.values(), false);
                 });
                 if (entry.getValue().isEmpty())
                     completedBeans.add(key);
@@ -172,21 +182,57 @@ public class BeanManager {
         return methods;
     }
 
-    private boolean loadMethod(Method m, Object methodObj, Collection<Object> repo){
+    private boolean loadMethod(Method m, Object methodObj, Collection<Object> repo, boolean includesRawBeans){
         List<Object> params = new LinkedList<>();
         for (Parameter param : m.getParameters()) {
             Class<?> paramCls = param.getType();
-            for (Object obj : repo){
-                if (paramCls.isInstance(obj)) {
-                    params.add(obj);
-                    break;
-                }
-            }
+            List<Object> validParams = new LinkedList<>();
+            for (Object obj : repo)
+                if (paramCls.isInstance(param)) validParams.add(obj);
+
         }
         try {
             m.invoke(methodObj, params.toArray());
         }catch (Exception e){return false;}
         return true;
+    }
+
+    private Object getValidParam(Class<?> cls, List<Object> params, boolean includesRawBeans){
+        if(!includesRawBeans){}
+        else{}
+        if(params.isEmpty()) return null;
+        if(params.size() == 1) return params.get(0);
+    }
+
+    private Object getValidParam(List<Object> params){
+        if(params.isEmpty()) return null;
+        if(params.size() == 1 || duplicateAutoWirePolicy == DuplicateAutoWirePolicy.FIRST) return params.get(0);
+        if(duplicateAutoWirePolicy == DuplicateAutoWirePolicy.RANDOM) return getRandomElement(params);
+
+        List<Object> profiledParams = new LinkedList<>();
+        for(Object param : params)
+            if(param.getClass().isAnnotationPresent(Profile.class)) profiledParams.add(param);
+
+        if(profiledParams.size() == 1) return profiledParams.get(0);
+
+
+        if(duplicateAutoWirePolicy == DuplicateAutoWirePolicy.PROFILE_WITH_FIRST){
+            if(profiledParams.isEmpty())
+                return  params.get(0);
+            return profiledParams.get(0);
+        } else if(duplicateAutoWirePolicy == DuplicateAutoWirePolicy.PROFILE_WITH_RANDOM) {
+            if(profiledParams.isEmpty())
+                return getRandomElement(params);
+            return getRandomElement(profiledParams);
+        } else {
+            if(profiledParams.isEmpty())
+                return params.get(0);
+            throw new ExceptionInInitializerError("there are multiple valid beans with profiles: " + params);
+        }
+    }
+
+    private<T> T getRandomElement(List<T> list){
+        return list.get((int)(list.size() * Math.random()));
     }
 
     public enum FailurePolicy{
@@ -195,6 +241,18 @@ public class BeanManager {
 
         public<T extends Throwable> void run(T e) throws T {
             if(this == EXCEPTION) throw e;
+        }
+    }
+
+    public enum DuplicateAutoWirePolicy{
+        FIRST,
+        RANDOM,
+        PROFILE_WITH_FIRST,
+        PROFILE_WITH_RANDOM,
+        PROFILE_WITH_EXCEPTION;
+
+        public boolean useProfile(){
+            return this == PROFILE_WITH_FIRST || this == PROFILE_WITH_RANDOM || this == PROFILE_WITH_EXCEPTION;
         }
     }
 }

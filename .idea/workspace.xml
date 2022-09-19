@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7b62fc31-ec9c-4a4e-94be-8f8d714b71de" name="Changes" comment="added ability to auto-wire raw beans">
+    <list default="true" id="7b62fc31-ec9c-4a4e-94be-8f8d714b71de" name="Changes" comment="added selectable failure policy for duplicate beans">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/BeanManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/BeanManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/example/Example.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/example/Example.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,19 +33,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "dart.analysis.tool.window.visible": "false",
-    "last_opened_file_path": "C:/Development/beans/src/main/java/om/self/beans",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "show.migrate.to.gradle.popup": "false"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Development/beans/src/main/java/om/self/beans&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Development\beans\src\main\java\om\self\beans" />
@@ -83,7 +83,14 @@
       <option name="project" value="LOCAL" />
       <updated>1663441772504</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="added selectable failure policy for duplicate beans">
+      <created>1663442769575</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1663442769575</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -100,6 +107,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="updated pom.xml" />
     <MESSAGE value="added ability to auto-wire raw beans" />
-    <option name="LAST_COMMIT_MESSAGE" value="added ability to auto-wire raw beans" />
+    <MESSAGE value="added selectable failure policy for duplicate beans" />
+    <option name="LAST_COMMIT_MESSAGE" value="added selectable failure policy for duplicate beans" />
   </component>
 </project>
