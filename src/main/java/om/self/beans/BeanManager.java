@@ -10,10 +10,17 @@ import org.reflections.Reflections;
 public class BeanManager {
     private static final BeanManager beanManager = new BeanManager();
 
+    //common settings
     private String targetPackage = "com";
     private String profile = "default";
+
+    //policies and strategies
     private FailurePolicy duplicateBeanPolicy = FailurePolicy.EXCEPTION;
-    private DuplicateAutoWirePolicy duplicateAutoWirePolicy = DuplicateAutoWirePolicy.PROFILE_WITH_EXCEPTION;
+    private SelectionStrategy duplicateAutoWireStrategy = SelectionStrategy.PROFILE;
+    private FallBackSelectionStrategy duplicateProfileFallbackStrategy = FallBackSelectionStrategy.EXCEPTION;
+    private FallBackSelectionStrategy noProfileFallbackStrategy = FallBackSelectionStrategy.FIRST;
+
+    //other stuff
     private final Hashtable<Class<?>, Object> beans = new Hashtable<>();
     private final Hashtable<Class<?>, Object> rawBeans = new Hashtable<>();
     private final Set<Class<?>> beanClasses = new HashSet<>();
@@ -50,13 +57,34 @@ public class BeanManager {
         this.duplicateBeanPolicy = duplicateBeanPolicy;
     }
 
-    public DuplicateAutoWirePolicy getDuplicateAutoWirePolicy() {
-        return duplicateAutoWirePolicy;
+    public SelectionStrategy getDuplicateAutoWireStrategy() {
+        return duplicateAutoWireStrategy;
     }
 
-    public void setDuplicateAutoWirePolicy(DuplicateAutoWirePolicy duplicateAutoWirePolicy) {
-        if(duplicateAutoWirePolicy == null) throw new IllegalArgumentException("duplicateAutoWirePolicy can not be null");
-        this.duplicateAutoWirePolicy = duplicateAutoWirePolicy;
+    public void setDuplicateAutoWireStrategy(SelectionStrategy duplicateAutoWireStrategy) {
+        if (duplicateAutoWireStrategy == null)
+            throw new IllegalArgumentException("duplicateAutoWireStrategy can not be null");
+        this.duplicateAutoWireStrategy = duplicateAutoWireStrategy;
+    }
+
+    public FallBackSelectionStrategy getDuplicateProfileFallbackStrategy() {
+        return duplicateProfileFallbackStrategy;
+    }
+
+    public void setDuplicateProfileFallbackStrategy(FallBackSelectionStrategy duplicateProfileFallbackStrategy) {
+        if (duplicateProfileFallbackStrategy == null)
+            throw new IllegalArgumentException("duplicateProfileFallbackStrategy can not be null");
+        this.duplicateProfileFallbackStrategy = duplicateProfileFallbackStrategy;
+    }
+
+    public FallBackSelectionStrategy getNoProfileFallbackStrategy() {
+        return noProfileFallbackStrategy;
+    }
+
+    public void setNoProfileFallbackStrategy(FallBackSelectionStrategy noProfileFallbackStrategy) {
+        if (noProfileFallbackStrategy == null)
+            throw new IllegalArgumentException("noProfileFallbackStrategy can not be null");
+        this.noProfileFallbackStrategy = noProfileFallbackStrategy;
     }
 
     public Hashtable<Class<?>, Object> getBeans() {
@@ -186,10 +214,10 @@ public class BeanManager {
         List<Object> params = new LinkedList<>();
         for (Parameter param : m.getParameters()) {
             Class<?> paramCls = param.getType();
-            List<Object> validParams = new LinkedList<>();
-            for (Object obj : repo)
-                if (paramCls.isInstance(param)) validParams.add(obj);
-
+            List<Object> validParams = new LinkedList<>(getParamsWithClass(repo, paramCls));
+            Object bestParam = getParam(paramCls, validParams, includesRawBeans);
+            if(bestParam != null)
+                params.add(bestParam);
         }
         try {
             m.invoke(methodObj, params.toArray());
@@ -197,38 +225,65 @@ public class BeanManager {
         return true;
     }
 
-    private Object getValidParam(Class<?> cls, List<Object> params, boolean includesRawBeans){
-        if(!includesRawBeans){}
-        else{}
+    //throw new ExceptionInInitializerError("there are multiple beans with valid profiles for " + paramCls.getName() +"\n[TIP] remove one of the profiles or set duplicateAutoWirePolicy to PROFILE_WITH_FIRST or PROFILE_WITH_RANDOM");
+    //throw new IllegalStateException("the duplicate auto-wire policy is not valid so parameter '" + paramCls.getName() + "' can not be loaded");
+    private Object getParam(Class<?> paramCls, List<Object> params, boolean includesRawBeans){
         if(params.isEmpty()) return null;
-        if(params.size() == 1) return params.get(0);
+
+        switch (duplicateAutoWireStrategy) {
+            case FIRST -> {
+                return params.get(0);
+            }
+            case RANDOM -> {
+                if(includesRawBeans || getParamsWithClass(rawBeans.values(), paramCls).isEmpty()) return getRandomElement(params);
+                return null;
+            }
+            case PROFILE -> {
+                List<Object> profiledParams = getParamsWithProfile(params);
+
+                if (includesRawBeans || !isParamWithProfile(getParamsWithClass(rawBeans.values(), paramCls))) {
+                    if (profiledParams.isEmpty()){
+                        switch (noProfileFallbackStrategy) {
+                            case FIRST -> {return params.get(0);}
+                            case RANDOM -> {return getRandomElement(params);}
+                            case EXCEPTION -> throw new ExceptionInInitializerError("there are no beans with valid profiles for " + paramCls.getName() +"\n[TIP] add a bean with profile '"+ profile + "' or set noProfileFallbackStrategy to FIRST or RANDOM");
+                        }
+                    } else {
+                        switch (duplicateProfileFallbackStrategy){
+                            case FIRST -> {return profiledParams.get(0);}
+                            case RANDOM -> {return getRandomElement(profiledParams);}
+                            case EXCEPTION -> {
+                                if(profiledParams.size() == 1) return profiledParams.get(0);
+                                throw new ExceptionInInitializerError("there are multiple beans with valid profiles for " + paramCls.getName() +"\n[TIP] remove one of the '" + profile + "' profiles or set duplicateProfileFallbackStrategy to FIRST or RANDOM");
+                            }
+                        }
+                    }
+                }
+
+                return null;
+            }
+            default -> throw new IllegalStateException("the duplicate auto-wire policy is not valid so parameter '" + paramCls.getName() + "' can not be loaded");
+        }
     }
 
-    private Object getValidParam(List<Object> params){
-        if(params.isEmpty()) return null;
-        if(params.size() == 1 || duplicateAutoWirePolicy == DuplicateAutoWirePolicy.FIRST) return params.get(0);
-        if(duplicateAutoWirePolicy == DuplicateAutoWirePolicy.RANDOM) return getRandomElement(params);
+    private List<Object> getParamsWithProfile(Collection<Object> params){
+        List<Object> profileParams = new LinkedList<>();
+        for (Object param: params)
+            if(param.getClass().isAnnotationPresent(Profile.class)) profileParams.add(param);
+        return profileParams;
+    }
 
-        List<Object> profiledParams = new LinkedList<>();
+    private boolean isParamWithProfile(Collection<Object> params){
+        for (Object param: params)
+            if(param.getClass().isAnnotationPresent(Profile.class)) return true;
+        return false;
+    }
+
+    private List<Object> getParamsWithClass(Collection<Object> params, Class<?> cls){
+        List<Object> classParams = new LinkedList<>();
         for(Object param : params)
-            if(param.getClass().isAnnotationPresent(Profile.class)) profiledParams.add(param);
-
-        if(profiledParams.size() == 1) return profiledParams.get(0);
-
-
-        if(duplicateAutoWirePolicy == DuplicateAutoWirePolicy.PROFILE_WITH_FIRST){
-            if(profiledParams.isEmpty())
-                return  params.get(0);
-            return profiledParams.get(0);
-        } else if(duplicateAutoWirePolicy == DuplicateAutoWirePolicy.PROFILE_WITH_RANDOM) {
-            if(profiledParams.isEmpty())
-                return getRandomElement(params);
-            return getRandomElement(profiledParams);
-        } else {
-            if(profiledParams.isEmpty())
-                return params.get(0);
-            throw new ExceptionInInitializerError("there are multiple valid beans with profiles: " + params);
-        }
+            if(cls.isInstance(param)) classParams.add(param);
+        return classParams;
     }
 
     private<T> T getRandomElement(List<T> list){
@@ -244,15 +299,15 @@ public class BeanManager {
         }
     }
 
-    public enum DuplicateAutoWirePolicy{
+    public enum SelectionStrategy {
         FIRST,
         RANDOM,
-        PROFILE_WITH_FIRST,
-        PROFILE_WITH_RANDOM,
-        PROFILE_WITH_EXCEPTION;
+        PROFILE,
+    }
 
-        public boolean useProfile(){
-            return this == PROFILE_WITH_FIRST || this == PROFILE_WITH_RANDOM || this == PROFILE_WITH_EXCEPTION;
-        }
+    public enum FallBackSelectionStrategy{
+        FIRST,
+        RANDOM,
+        EXCEPTION
     }
 }
