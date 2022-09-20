@@ -225,8 +225,6 @@ public class BeanManager {
         return true;
     }
 
-    //throw new ExceptionInInitializerError("there are multiple beans with valid profiles for " + paramCls.getName() +"\n[TIP] remove one of the profiles or set duplicateAutoWirePolicy to PROFILE_WITH_FIRST or PROFILE_WITH_RANDOM");
-    //throw new IllegalStateException("the duplicate auto-wire policy is not valid so parameter '" + paramCls.getName() + "' can not be loaded");
     private Object getParam(Class<?> paramCls, List<Object> params, boolean includesRawBeans){
         if(params.isEmpty()) return null;
 
