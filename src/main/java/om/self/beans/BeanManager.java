@@ -1,5 +1,6 @@
 package om.self.beans;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.*;
@@ -13,6 +14,7 @@ public class BeanManager {
     //common settings
     private String targetPackage = "com";
     private String profile = "default";
+    private final List<String> tags = new LinkedList<>(List.of("default"));
 
     //policies and strategies
     private FailurePolicy duplicateBeanPolicy = FailurePolicy.EXCEPTION;
@@ -46,6 +48,18 @@ public class BeanManager {
     public void setProfile(String profile) {
         if(profile == null) throw new IllegalArgumentException("profile can not be null");
         this.profile = profile;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void addTags(String... tags) {
+        this.tags.addAll(Arrays.asList(tags));
+    }
+
+    public void removeDefaultTag(){
+        tags.remove("default");
     }
 
     public FailurePolicy getDuplicateBeanPolicy() {
@@ -151,6 +165,11 @@ public class BeanManager {
         return beanClasses;
     }
 
+    /**
+     * adds a class so it can be instantiated and loaded
+     * @param cls the class to add
+     * @deprecated use {@link BeanManager#addBean(Class, boolean)} instead, it auto-instantiates the bean and allows you to choose to auto-wire
+     */
     public void addBeanClass(Class<?> cls){
         beanClasses.add(cls);
     }
@@ -161,7 +180,7 @@ public class BeanManager {
         //load all bean classes
         for (Class<?> cls : ref.getTypesAnnotatedWith(Bean.class)){
             Profile profileAnnotation = cls.getAnnotation(Profile.class);
-            if(profileAnnotation != null && !profile.equals(profileAnnotation.value())) continue;
+            if((profileAnnotation != null && !profile.equals(profileAnnotation.value())) || !containsTag(cls)) continue;
             addBeanClass(cls);
         }
 
@@ -200,6 +219,19 @@ public class BeanManager {
             //if no new beans were completed then it will run forever
             if(completedBeans.isEmpty()) throw new ExceptionInInitializerError("unable to auto-wire the following: " + autoWireMethods.entrySet() + "\n[TIP] check for circular dependencies or dependencies that arent loaded");
         }
+    }
+
+    private<T extends Annotation> T getAnnotationRecursively(Class<?> cls, Class<T> annotation){
+        if(cls == null) return null;
+        T a = cls.getAnnotation(annotation);
+        if(a == null) return getAnnotationRecursively(cls.getSuperclass(), annotation);
+        return a;
+    }
+
+    private boolean containsTag(Class<?> cls){
+        for(String tag : getAnnotationRecursively(cls, Bean.class).tags())
+            if(tags.contains(tag)) return true;
+        return false;
     }
 
     private List<Method> getAutoWireMethods(Class<?> cls){

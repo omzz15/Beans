@@ -4,13 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7b62fc31-ec9c-4a4e-94be-8f8d714b71de" name="Changes" comment="added better control to how beans are auto-wired and how duplicate valid candidates are handled">
+    <list default="true" id="7b62fc31-ec9c-4a4e-94be-8f8d714b71de" name="Changes" comment="minor updates">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/Bean.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/Bean.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/BeanManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/BeanManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/Profile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/Profile.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/example/DefaultBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/example/DefaultBean.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/example/ProductionBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/example/ProductionBean.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/example/SnapshotBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/example/SnapshotBean.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,8 +21,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="AnnotationType" />
         <option value="Class" />
+        <option value="AnnotationType" />
       </list>
     </option>
   </component>
@@ -108,7 +109,14 @@
       <option name="project" value="LOCAL" />
       <updated>1663645802532</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="minor updates">
+      <created>1663678167210</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1663678167210</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -128,6 +136,23 @@
     <MESSAGE value="added selectable failure policy for duplicate beans" />
     <MESSAGE value="tried adding more settings" />
     <MESSAGE value="added better control to how beans are auto-wired and how duplicate valid candidates are handled" />
-    <option name="LAST_COMMIT_MESSAGE" value="added better control to how beans are auto-wired and how duplicate valid candidates are handled" />
+    <MESSAGE value="minor updates" />
+    <option name="LAST_COMMIT_MESSAGE" value="minor updates" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/om/self/beans/BeanManager.java</url>
+          <line>271</line>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/om/self/beans/BeanManager.java</url>
+          <line>188</line>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
