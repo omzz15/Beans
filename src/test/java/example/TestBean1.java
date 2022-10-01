@@ -1,12 +1,13 @@
 package example;
 
-import om.self.beans.Autowired;
 import om.self.beans.Bean;
+import om.self.beans.core.Autowired;
+import om.self.beans.core.Profile;
 
 @Bean
 public class TestBean1 {
-    @Autowired(useRawBeans = true)
-    public void setBean(DefaultBean b){
-        System.out.println("Bean Manager set bean in example.TestBean1 as " + b.getClass().getName());
+    @Autowired
+    public void test(DefaultBean bean){
+        System.out.println(bean);
     }
 }

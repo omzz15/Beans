@@ -1,4 +1,4 @@
-package om.self.beans;
+package om.self.beans.core;
 
 
 import java.lang.annotation.Retention;

@@ -4,14 +4,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7b62fc31-ec9c-4a4e-94be-8f8d714b71de" name="Changes" comment="minor updates">
+    <list default="true" id="7b62fc31-ec9c-4a4e-94be-8f8d714b71de" name="Changes" comment="added tags to make more custom beans">
+      <change afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/PackageBeanManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/core/Autowired.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/core/BeanCore.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/core/BeanCoreSettings.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/core/ParamSettings.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/core/Utils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/Autowired.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/Bean.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/Bean.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/BeanManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/BeanManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/BeanManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/Profile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/core/Profile.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/example/DefaultBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/example/DefaultBean.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/example/Example.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/example/Example.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/example/ProductionBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/example/ProductionBean.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/example/SnapshotBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/example/SnapshotBean.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/example/TestBean1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/example/TestBean1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/example/TestBean2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/example/TestBean2.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,8 +32,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="AnnotationType" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -44,7 +55,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Development/beans/src/main/java/om/self/beans&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Development/Plaforms/Java/Library/Task&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
@@ -59,7 +70,7 @@
   <component name="RunManager">
     <configuration name="BeansTest" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="example.Example" />
-      <module name="beans" />
+      <module name="Beans" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -116,7 +127,14 @@
       <option name="project" value="LOCAL" />
       <updated>1663678167210</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="added tags to make more custom beans">
+      <created>1663703555877</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1663703555877</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -137,22 +155,10 @@
     <MESSAGE value="tried adding more settings" />
     <MESSAGE value="added better control to how beans are auto-wired and how duplicate valid candidates are handled" />
     <MESSAGE value="minor updates" />
-    <option name="LAST_COMMIT_MESSAGE" value="minor updates" />
+    <MESSAGE value="added tags to make more custom beans" />
+    <option name="LAST_COMMIT_MESSAGE" value="added tags to make more custom beans" />
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/om/self/beans/BeanManager.java</url>
-          <line>271</line>
-          <option name="timeStamp" value="11" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/om/self/beans/BeanManager.java</url>
-          <line>188</line>
-          <option name="timeStamp" value="17" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Beans$BeansTest.ic" NAME="BeansTest Coverage Results" MODIFIED="1664637709679" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>

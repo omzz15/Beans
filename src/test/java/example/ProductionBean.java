@@ -1,11 +1,12 @@
 package example;
 
-import om.self.beans.Autowired;
-import om.self.beans.Bean;
-import om.self.beans.Profile;
+import om.self.beans.core.Autowired;
+import om.self.beans.core.ParamSettings;
+import om.self.beans.core.Profile;
 
 @Profile("production")
 public class ProductionBean extends DefaultBean{
+
     @Autowired
-    public void set(TestBean1 b){}
+    public void set(@ParamSettings(allowNull = true) TestBean1 b){}
 }
