@@ -10,6 +10,6 @@ import om.self.beans.core.Profile;
 public class DefaultBean {
     @Autowired
     public void load(@ParamSettings(allowRawBean = true) TestBean1 tb1){
-        System.out.println(tb1);
+        System.out.println("Danish: " + tb1);
     }
 }

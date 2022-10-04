@@ -1,11 +1,7 @@
 package om.self.beans.core;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
-
-public class BeanCoreSettings {
+public class BeanManagerSettings {
     private String profile = "default";
 
     //policies and strategies

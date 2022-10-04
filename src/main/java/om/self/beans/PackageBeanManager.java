@@ -1,6 +1,6 @@
 package om.self.beans;
 
-import om.self.beans.core.BeanCore;
+import om.self.beans.core.BeanManager;
 import om.self.beans.core.Profile;
 import org.reflections.Reflections;
 
@@ -8,8 +8,9 @@ import java.util.*;
 
 import static om.self.beans.core.Utils.getAnnotationRecursively;
 
-public class PackageBeanManager extends BeanCore{
+public class PackageBeanManager extends BeanManager {
 
+    private final static PackageBeanManager instance = new PackageBeanManager();
     private String targetPackage = "com";
     private final Set<String> tags = new HashSet<>(Collections.singleton("default"));
 
@@ -23,6 +24,10 @@ public class PackageBeanManager extends BeanCore{
     ///////////////////////
     //GETTERS and SETTERS//
     ///////////////////////
+    public static PackageBeanManager getInstance(){
+        return instance;
+    }
+
     public Set<String> getTags() {
         return tags;
     }
@@ -85,7 +90,7 @@ public class PackageBeanManager extends BeanCore{
     private Object makeInstance(Class<?> cls){
         Object obj;
         try{
-            obj = cls.getConstructor(BeanCore.class).newInstance(this);
+            obj = cls.getConstructor(BeanManager.class).newInstance(this);
         }
         catch (Exception e) {
             try {
