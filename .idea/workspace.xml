@@ -4,15 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7b62fc31-ec9c-4a4e-94be-8f8d714b71de" name="Changes" comment="added get instance">
+    <list default="true" id="7b62fc31-ec9c-4a4e-94be-8f8d714b71de" name="Changes" comment="different pom for ftc compatibility">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/PackageBeanManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/PackageBeanManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/core/BeanManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/core/BeanManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/core/BeanManagerSettings.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/core/BeanManagerSettings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/example/Example.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/example/Example.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/example/ProductionBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/example/ProductionBean.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/example/TestBean1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/example/TestBean1.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,6 +22,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="ftc_master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -138,7 +137,21 @@
       <option name="project" value="LOCAL" />
       <updated>1664926984644</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="added filter to PackageBeanManager">
+      <created>1665960668368</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1665960668368</updated>
+    </task>
+    <task id="LOCAL-00011" summary="different pom for ftc compatibility">
+      <created>1665961058412</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1665961058412</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -162,7 +175,9 @@
     <MESSAGE value="added tags to make more custom beans" />
     <MESSAGE value="V1 of bean manager is good to go" />
     <MESSAGE value="added get instance" />
-    <option name="LAST_COMMIT_MESSAGE" value="added get instance" />
+    <MESSAGE value="added filter to PackageBeanManager" />
+    <MESSAGE value="different pom for ftc compatibility" />
+    <option name="LAST_COMMIT_MESSAGE" value="different pom for ftc compatibility" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Beans$BeansTest.ic" NAME="BeansTest Coverage Results" MODIFIED="1664637709679" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
