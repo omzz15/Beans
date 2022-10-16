@@ -8,5 +8,5 @@ import om.self.beans.core.Profile;
 public class ProductionBean extends DefaultBean{
 
     @Autowired
-    public void set(@ParamSettings(allowNull = true) TestBean1 b){}
+    public void set(@ParamSettings(allowRawBean = true) TestBean1 b){}
 }

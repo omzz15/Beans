@@ -10,6 +10,8 @@ public class BeanManagerSettings {
     private FallBackSelectionStrategy duplicateProfileFallbackStrategy = FallBackSelectionStrategy.EXCEPTION;
     private FallBackSelectionStrategy noProfileFallbackStrategy = FallBackSelectionStrategy.FIRST;
 
+    public boolean recursivelyCheckForProfile = true;
+
     public String getProfile() {
         return profile;
     }

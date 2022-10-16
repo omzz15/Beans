@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 
 public class BeanManager {
 
-    private static final BeanManager instance = new BeanManager();
+//    private static final BeanManager instance = new BeanManager();
 
     private BeanManagerSettings settings;
 
@@ -36,9 +36,9 @@ public class BeanManager {
     ///////////////////////
     //GETTERS and SETTERS//
     ///////////////////////
-    public static BeanManager getInstance(){
-        return instance;
-    }
+//    public static BeanManager getInstance(){
+//        return instance;
+//    }
 
     //----------settings----------//
     public BeanManagerSettings getSettings() {
@@ -59,8 +59,8 @@ public class BeanManager {
      * @param isLoaded whether the bean is already loaded(this prevents {@link BeanManager#loadBean(Object)} from being called on the bean and will prevent it from being called in {@link BeanManager#load()} event if shouldLoad is true)
      */
     public void addBean(Object bean, boolean shouldLoad, boolean isLoaded){
-        if(beans.containsKey(bean.getClass())){
-            if(beans.get(bean.getClass()) == bean) return;
+        if(isBeanThere(bean.getClass())){
+            if(isBeanThere(bean)) return;
             settings.getDuplicateBeanPolicy().throwError(getDuplicateBeanException(bean));
             return;
         }
@@ -87,7 +87,7 @@ public class BeanManager {
     }
 
     /**
-     * gets the beanCls with the right class
+     * gets the bean with the right class
      * @param beanCls the class of the beanCls
      * @return the bean of type T
      * @param <T> the type of the beanCls
@@ -98,6 +98,13 @@ public class BeanManager {
         return (T)beans.get(beanCls).getValue();
     }
 
+    /**
+     * gets a bean that is the right class or a subclass of the right class
+     * @param beanCls the class of the beanCls
+     * @return the bean of type T
+     * @param <T> the type of the beanCls
+     * @deprecated MAY BE REMOVED in V2.0.0. Use {@link BeanManager#getBestMatch(Class, boolean, boolean)} for more safety and to mimic auto wiring for a more predictable output
+     */
     public<T, V extends T> Optional<V> getBeanAndSubclass(Class<T> beanCls){
         return beans.values().stream()
                 .map(val -> val.getKey())
@@ -106,11 +113,22 @@ public class BeanManager {
                 .findFirst();
     }
 
-    public<T> Optional<T> getLoadedBean(Class<T> bean){
-        if(beans.get(bean).getValue()) return Optional.of((T)beans.get(bean).getKey());
+    /**
+     * gets a loaded bean that is the right class
+     * @param beanCls the class of the beanCls
+     * @return the bean of type T
+     * @param <T> the type of the beanCls
+     * @deprecated MAY BE REMOVED in V2.0.0. Use {@link BeanManager#getBestMatch(Class, boolean, boolean)} for more safety and to mimic auto wiring for a more predictable output
+     */
+    public<T> Optional<T> getLoadedBean(Class<T> beanCls){
+        if(beans.get(beanCls).getValue()) return Optional.of((T)beans.get(beanCls).getKey());
         return Optional.empty();
     }
 
+    /**
+     * gives you a hashtable that links the bean classes to entries containing the bean object and weather it is loaded
+     * @return all the beans
+     */
     public Hashtable<Class<?>, Map.Entry<Object, Boolean>> getBeans(){
         return beans;
     }
@@ -121,7 +139,7 @@ public class BeanManager {
      * @return false if there is no bean or if it is not loaded, true if the bean is loaded
      */
     public boolean isBeanLoaded(Class<?> beanCls){
-        return beans.containsKey(beanCls) && beans.get(beanCls).getValue();
+        return isBeanThere(beanCls) && beans.get(beanCls).getValue();
     }
 
     /**
@@ -130,7 +148,27 @@ public class BeanManager {
      * @return false if the bean doesn't match/exist or if it is not loaded, true if the bean is loaded
      */
     public boolean isBeanLoaded(Object bean){
-        return isBeanLoaded(bean.getClass());
+        Class<? extends Object> beanCls = bean.getClass();
+        return isBeanThere(beanCls) && beans.get(beanCls).getKey() == bean && beans.get(beanCls).getValue();
+    }
+
+    /**
+     * checks if there is a bean of the specified class
+     * @param beanCls the class you want to check
+     * @return weather the bean is there
+     */
+    public boolean isBeanThere(Class<?> beanCls){
+        return beans.containsKey(beanCls);
+    }
+
+    /**
+     * checks if the exact bean is stored
+     * @param bean the bean you want to check
+     * @return weather the bean is there
+     */
+    public boolean isBeanThere(Object bean){
+        Class<? extends Object> beanCls = bean.getClass();
+        return isBeanThere(beanCls) && beans.get(beanCls).getKey() == bean;
     }
 
     ////////
@@ -143,7 +181,7 @@ public class BeanManager {
     }
 
     //----------Bean----------//
-    public Object loadBean(@Nonnull Object bean){
+    public <T> T loadBean(@Nonnull T bean){
         addBean(bean, false, false);
         return loadBeanInternal(bean);
     }
@@ -161,7 +199,7 @@ public class BeanManager {
     }
 
     //----------Method----------//
-    private void loadMethod(Method m, Object bean){
+    public void loadMethod(Method m, Object bean){
         List<Object> vals = new LinkedList<>();
         for(Parameter param : m.getParameters()) {
             try {
@@ -187,42 +225,42 @@ public class BeanManager {
 
     //----------Parameter----------//
 
-    private <T> T getBestMatch(Class<T> cls, boolean allowRawBean, boolean allowNull){
+    /**
+     * picks the best matched bean based on the input class(could return a subclass) and the settings from {@link BeanManagerSettings}. This is the preferred method to get a bean because it is the most flexible and is also the same as when using {@link Autowired}
+     * @param cls the class of the bean you want
+     * @param allowRawBean weather the bean can be raw(meaning not all @Autowired methods have been called)
+     * @param allowNull weather it can return null if it cant find an appropriate bean. this method will throw an error if this is false and it cant find a valid bean
+     * @return the bean that best matches the input class
+     * @param <T> the type of the bean
+     */
+    public <T> T getBestMatch(Class<T> cls, boolean allowRawBean, boolean allowNull){
         switch (settings.getDuplicateAutoWireStrategy()){
-            case FIRST -> {
+            case FIRST :
                 return getFirstMatch(cls, allowRawBean, allowNull, getWithType(cls, beans.values().stream().map(Map.Entry::getKey)).toList());
-            }
-            case RANDOM -> {
+            case RANDOM :
                 return getRandomMatch(cls, allowRawBean, allowNull, getWithType(cls, beans.values().stream().map(Map.Entry::getKey)).toList());
-            }
-            case PROFILE -> {
+            case PROFILE :
                 List<T> profiledBeans = getWithProfile(getWithType(cls, beans.values().stream().map(Map.Entry::getKey))).toList();
 
                 if(profiledBeans.isEmpty()){
                     switch (settings.getNoProfileFallbackStrategy()){
-                        case FIRST -> {
+                        case FIRST :
                             return getFirstMatch(cls, allowRawBean, allowNull, getWithType(cls, beans.values().stream().map(Map.Entry::getKey)).toList());
-                        }
-                        case RANDOM -> {
+                        case RANDOM :
                             return getRandomMatch(cls, allowRawBean, allowNull, getWithType(cls, beans.values().stream().map(Map.Entry::getKey)).toList());
-                        }
-                        case EXCEPTION -> throw new ExceptionInInitializerError("there were no beans of type " + cls.getName() + " with the profile '" + settings.getProfile() + "' \n[TIP] add a bean of the right type with a @Profile("+settings.getProfile()+") annotation or set noProfileFallbackStrategy to FIRST or RANDOM");
+                        case EXCEPTION : throw new ExceptionInInitializerError("there were no beans of type " + cls.getName() + " with the profile '" + settings.getProfile() + "' \n[TIP] add a bean of the right type with a @Profile("+settings.getProfile()+") annotation or set noProfileFallbackStrategy to FIRST or RANDOM");
                     }
                 }
 
                 switch (settings.getDuplicateProfileFallbackStrategy()){
-                    case FIRST -> {
+                    case FIRST :
                         return getFirstMatch(cls, allowRawBean, allowNull, profiledBeans);
-                    }
-                    case RANDOM -> {
+                    case RANDOM :
                         return getRandomMatch(cls, allowRawBean, allowNull, profiledBeans);
-                    }
-                    case EXCEPTION -> {
+                    case EXCEPTION :
                         if(profiledBeans.size() == 1)
                             return getFirstMatch(cls, allowRawBean, allowNull, profiledBeans);
                         throw new ExceptionInInitializerError("there were multiple beans of type " + cls.getName() + " with profile '" + settings.getProfile() + "' \n[TIP] remove beans by deleting or adding specific tags in @Bean so only one bean of the right type with the right profile is loaded. You could also set duplicateProfileFallbackStrategy to FIRST or RANDOM");
-                    }
-                }
             }
         }
 
@@ -272,7 +310,9 @@ public class BeanManager {
     //Checks//
     //////////
     private boolean containsProfile(Class<?> bean){
-        Profile profile = Utils.getAnnotationRecursively(bean, Profile.class);
+        Profile profile;
+        if(settings.recursivelyCheckForProfile)profile = Utils.getAnnotationRecursively(bean, Profile.class);
+        else profile = bean.getAnnotation(Profile.class);
         return profile != null && profile.value().equals(settings.getProfile());
     }
 

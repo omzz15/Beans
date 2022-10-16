@@ -5,14 +5,17 @@ import om.self.beans.core.Profile;
 import org.reflections.Reflections;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 import static om.self.beans.core.Utils.getAnnotationRecursively;
 
 public class PackageBeanManager extends BeanManager {
 
-    private final static PackageBeanManager instance = new PackageBeanManager();
+//    private final static PackageBeanManager instance = new PackageBeanManager();
     private String targetPackage = "com";
     private final Set<String> tags = new HashSet<>(Collections.singleton("default"));
+
+    private Predicate<Object> filter = (obj) -> true;
 
     public PackageBeanManager(){}
 
@@ -21,12 +24,18 @@ public class PackageBeanManager extends BeanManager {
         Arrays.stream(tags).forEach(this::addTag);
     }
 
+    public PackageBeanManager(String targetPackage, Predicate<Object> filter, String... tags){
+        setTargetPackage(targetPackage);
+        this.filter = filter;
+        Arrays.stream(tags).forEach(this::addTag);
+    }
+
     ///////////////////////
     //GETTERS and SETTERS//
     ///////////////////////
-    public static PackageBeanManager getInstance(){
-        return instance;
-    }
+//    public static PackageBeanManager getInstance(){
+//        return instance;
+//    }
 
     public Set<String> getTags() {
         return tags;
@@ -54,20 +63,29 @@ public class PackageBeanManager extends BeanManager {
         this.targetPackage = targetPackage;
     }
 
+    public Predicate<Object> getFilter() {
+        return filter;
+    }
+
+    public void setFilter(Predicate<Object> filter) {
+        if (filter == null) throw new IllegalArgumentException("filter can not be null");
+        this.filter = filter;
+    }
 
     ///////////
     //loading//
     ///////////
-    public void load(String targetPackage){
+    public void load(String targetPackage, Predicate<Object> filter){
         new Reflections(targetPackage).getTypesAnnotatedWith(Bean.class).stream()
                 .filter(this::isBeanLoadable)
+                .filter(filter)
                 .forEach((bean) -> addBean(makeInstance(bean), getAnnotationRecursively(bean, Bean.class).alwaysLoad(), false));
         super.load();
     }
 
     @Override
     public void load(){
-        load(targetPackage);
+        load(targetPackage, filter);
     }
 
     /**
