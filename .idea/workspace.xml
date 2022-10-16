@@ -5,14 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7b62fc31-ec9c-4a4e-94be-8f8d714b71de" name="Changes" comment="added get instance">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/PackageBeanManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/PackageBeanManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/core/BeanManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/core/BeanManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/core/BeanManagerSettings.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/core/BeanManagerSettings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/example/Example.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/example/Example.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/example/ProductionBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/example/ProductionBean.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/example/TestBean1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/example/TestBean1.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
