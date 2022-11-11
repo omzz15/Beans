@@ -76,10 +76,10 @@ public class PackageBeanManager extends BeanManager {
     //loading//
     ///////////
     public void load(String targetPackage, Predicate<Object> filter){
-        new Reflections(targetPackage).getTypesAnnotatedWith(Bean.class).stream()
-                .filter(this::isBeanLoadable)
-                .filter(filter)
-                .forEach((bean) -> addBean(makeInstance(bean), getAnnotationRecursively(bean, Bean.class).alwaysLoad(), false));
+//        new Reflections(targetPackage).getTypesAnnotatedWith(Bean.class).stream()
+//                .filter(this::isBeanLoadable)
+//                .filter(filter)
+//                .forEach((bean) -> addBean(makeInstance(bean), getAnnotationRecursively(bean, Bean.class).alwaysLoad(), false));
         super.load();
     }
 
@@ -105,20 +105,5 @@ public class PackageBeanManager extends BeanManager {
         return !bean.isAnnotationPresent(Profile.class) || Objects.equals(bean.getAnnotation(Profile.class).value(), getSettings().getProfile());
     }
 
-    private Object makeInstance(Class<?> cls){
-        Object obj;
-        try{
-            obj = cls.getConstructor(BeanManager.class).newInstance(this);
-        }
-        catch (Exception e) {
-            try {
-                obj = cls.getConstructor().newInstance();
-            } catch (NoSuchMethodException exception){
-                throw new ExceptionInInitializerError("there is no valid constructor for " + cls.getName() + "\n[TIP] Add a no args constructor or a one arg constructor that takes BeanCore or PackageBeanManager");
-            } catch (Exception exception){
-                throw new ExceptionInInitializerError("there was a problem when creating an instance of " + cls.getName());
-            }
-        }
-        return obj;
-    }
+
 }
