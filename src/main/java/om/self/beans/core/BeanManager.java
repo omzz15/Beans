@@ -1,9 +1,5 @@
 package om.self.beans.core;
 
-import javax.annotation.Nonnull;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -17,32 +13,27 @@ public class BeanManager {
     /**
      * this stores all the beans and weather they are loaded in relation to the beans class
      */
-    private final Hashtable<Class<?>, BeanContainer> beans = new Hashtable<>();
+    private final Hashtable<Class<?>, Map.Entry<Object, BeanLoad>> beans = new Hashtable<>();
 
     /**
      * this is the list of beans that have to be loaded when {@link BeanManager#load()} is called
      */
-    private final Set<Class<?>> loadingBeans = new HashSet<>();
+    private final Set<Object> loadingBeans = new HashSet<>();
 
     ///////////////
     //CONSTRUCTOR//
     ///////////////
     public BeanManager(){
         settings = new BeanManagerSettings();
-        addBean(this, false, true);
     }
 
     public BeanManager(BeanManagerSettings settings) {
         this.settings = settings;
-        addBean(this, false, true);
     }
 
     ///////////////////////
     //GETTERS and SETTERS//
     ///////////////////////
-//    public static BeanManager getInstance(){
-//        return instance;
-//    }
 
     //----------settings----------//
     public BeanManagerSettings getSettings() {
@@ -60,27 +51,17 @@ public class BeanManager {
      * adds a bean to the repository {@link BeanManager#beans}
      * @param bean the bean you want to add
      * @param shouldLoad whether the bean should load when {@link BeanManager#load()} is called
-     * @param isLoaded whether the bean is already loaded(this prevents {@link BeanManager#loadBean(Object)} from being called on the bean and will prevent it from being called in {@link BeanManager#load()} event if shouldLoad is true)
+     * @param isLoaded whether the bean is already loaded(this prevents {@link BeanManager#loadBean(Object, Runnable)} from being called on the bean and will prevent it from being called in {@link BeanManager#load()} event if shouldLoad is true)
      */
-    public void addBean(Object bean, boolean shouldLoad, boolean isLoaded){
+    public void addBean(Object bean, Runnable loadFunction, boolean shouldLoad, boolean isLoaded){
         if(isBeanThere(bean.getClass())){
             if(isBeanThere(bean)) return;
             settings.getDuplicateBeanPolicy().throwError(getDuplicateBeanException(bean));
             return;
         }
 
-        beans.put(bean.getClass(), new BeanContainer(bean, isLoaded));
-        if(shouldLoad && !isLoaded) loadingBeans.add(bean.getClass());
-    }
-
-    public void addBean(Class<?> beanCls){
-        if(isBeanThere(beanCls)){
-            settings.getDuplicateBeanPolicy().throwError(getDuplicateBeanException(beanCls));
-            return;
-        }
-
-        beans.put(beanCls, new BeanContainer());
-        loadingBeans.add(beanCls);
+        beans.put(bean.getClass(), new AbstractMap.SimpleEntry<>(bean, new BeanLoad(loadFunction, isLoaded)));
+        if(shouldLoad && !isLoaded) loadingBeans.add(bean);
     }
 
     /**
@@ -101,60 +82,11 @@ public class BeanManager {
     }
 
     /**
-     * gets the bean with the right class
-     * @param beanCls the class of the beanCls
-     * @return the bean of type T
-     * @param <T> the type of the beanCls
-     * @deprecated MAY BE REMOVED in V2.0.0. Use {@link BeanManager#getBestMatch(Class, boolean, boolean)} for more safety and to mimic auto wiring for a more predictable output
-     */
-    @Deprecated
-    public<T> T getBean(Class<T> beanCls){
-        return (T)beans.get(beanCls).bean;
-    }
-
-    /**
-     * gets a bean that is the right class or a subclass of the right class
-     * @param beanCls the class of the beanCls
-     * @return the bean of type T
-     * @param <T> the type of the beanCls
-     * @deprecated MAY BE REMOVED in V2.0.0. Use {@link BeanManager#getBestMatch(Class, boolean, boolean)} for more safety and to mimic auto wiring for a more predictable output
-     */
-    @Deprecated
-    public<T, V extends T> Optional<V> getBeanAndSubclass(Class<T> beanCls){
-        return beans.values().stream()
-                .map(val -> val.bean)
-                .filter(bean -> beanCls.isInstance(bean))
-                .map(bean -> (V) bean)
-                .findFirst();
-    }
-
-    /**
-     * gets a loaded bean that is the right class
-     * @param beanCls the class of the beanCls
-     * @return the bean of type T
-     * @param <T> the type of the beanCls
-     * @deprecated MAY BE REMOVED in V2.0.0. Use {@link BeanManager#getBestMatch(Class, boolean, boolean)} for more safety and to mimic auto wiring for a more predictable output
-     */
-    @Deprecated
-    public<T> Optional<T> getLoadedBean(Class<T> beanCls){
-        if(isBeanThere(beanCls) && beans.get(beanCls).isLoaded) return Optional.of((T)beans.get(beanCls).bean);
-        return Optional.empty();
-    }
-
-    /**
      * gives you a hashtable that links the bean classes to entries containing the bean object and weather it is loaded
      * @return all the beans
      */
-    public Hashtable<Class<?>, BeanContainer> getBeans(){
+    public Hashtable<Class<?>, Map.Entry<Object, BeanLoad>> getBeans(){
         return beans;
-    }
-
-    public List<Object> getBeansAsList(){
-        return getBeansAsStream().collect(Collectors.toList());
-    }
-
-    public Stream<Object> getBeansAsStream(){
-        return beans.values().stream().map(c -> c.bean);
     }
 
     /**
@@ -163,7 +95,7 @@ public class BeanManager {
      * @return false if there is no bean or if it is not loaded, true if the bean is loaded
      */
     public boolean isBeanLoaded(Class<?> beanCls){
-        return isBeanThere(beanCls) && beans.get(beanCls).isLoaded;
+        return isBeanThere(beanCls) && beans.get(beanCls).getValue().isLoaded;
     }
 
     /**
@@ -173,7 +105,7 @@ public class BeanManager {
      */
     public boolean isBeanLoaded(Object bean){
         Class<? extends Object> beanCls = bean.getClass();
-        return isBeanThere(beanCls) && beans.get(beanCls).bean == bean && beans.get(beanCls).isLoaded;
+        return isBeanThere(beanCls) && beans.get(beanCls).getKey() == bean && beans.get(beanCls).getValue().isLoaded;
     }
 
     /**
@@ -192,9 +124,8 @@ public class BeanManager {
      */
     public boolean isBeanThere(Object bean){
         Class<? extends Object> beanCls = bean.getClass();
-        return isBeanThere(beanCls) && beans.get(beanCls).bean == bean;
+        return isBeanThere(beanCls) && beans.get(beanCls).getKey() == bean;
     }
-
 
     ////////
     //Load//
@@ -205,98 +136,45 @@ public class BeanManager {
         loadingBeans.clear();
     }
 
-
     //----------Bean----------//
-    public void loadBean(Class<?> beanCls){
-        if(!isBeanThere(beanCls))
-            addBean(beanCls);
-        loadBeanInternal(beanCls);
+    public <T> T loadBean(T bean, Runnable loadFunction){
+        addBean(bean, loadFunction, false, false);
+        return loadBeanInternal(bean);
     }
 
-    public void loadBeanInternal(Class<?> beanCls){
-        if(isBeanLoaded(beanCls)) return;
+    private<T> T loadBeanInternal(T bean){
+        if(isBeanLoaded(bean)) return bean;
 
-        BeanContainer bc = beans.get(beanCls);
+        beans.get(bean.getClass()).getValue().load();
 
-        if(bc.bean == null)
-            bc.bean = makeInstance(beanCls);
-
-        for (Method m: getAutoWireMethods(beanCls)){
-            loadMethod(m, bc.bean);
-        }
-
-        bc.isLoaded = true;
-    }
-
-    private Object makeInstance(Class<?> cls){
-        for(Constructor c : cls.getConstructors()){
-            try{
-                if(c.isAnnotationPresent(Autowired.class))
-                    return c.newInstance(getBestMatchParams(c.getParameters()).toArray());
-            } catch (Exception ignore) {}
-        }
-
-        try{
-            return cls.getConstructor().newInstance();
-        } catch (Exception e) {
-            throw new ExceptionInInitializerError("there is no valid constructor for " + cls.getName() + "\n[TIP] Add a no args constructor or a constructor that has the @Autowired annotation");
-        }
-    }
-
-
-    //----------Method----------//
-    public void loadMethod(Method m, Object bean){
-        try {
-            m.invoke(bean, getBestMatchParams(m.getParameters()));
-        } catch(Exception e){
-            throw new IllegalStateException("failed to load method '" + m.getName() + "' with bean '" + bean + "'", e);
-        }
-    }
-
-    private List<Object> getBestMatchParams(Parameter... parameters){
-        List<Object> values = new LinkedList<>();
-        for(Parameter param : parameters) {
-            try {
-                if (param.isAnnotationPresent(ParamSettings.class)) {
-                    ParamSettings paramSettings = param.getAnnotation(ParamSettings.class);
-                    values.add(getBestMatch(param.getType(), paramSettings.allowRawBean(), paramSettings.allowNull()));
-                } else values.add(getBestMatch(param.getType(), false, false));
-            } catch (StackOverflowError e){
-                throw new StackOverflowError("while trying to get parameter '"+ param.getName() + "', a stack overflow has been hit most likely because of a recursion error.\n[TIP] try checking for circular dependencies in the method or set allowRaw to true with @ParamSettings");
-            }
-        }
-        return values;
-    }
-
-    private List<Method> getAutoWireMethods(Class<?> cls){
-        return Arrays.stream(cls.getMethods()).filter((m) -> m.isAnnotationPresent(Autowired.class)).collect(Collectors.toList());
+        return bean;
     }
 
     //----------Parameter----------//
 
     /**
-     * picks the best matched bean based on the input class(could return a subclass) and the settings from {@link BeanManagerSettings}. This is the preferred method to get a bean because it is the most flexible and is also the same as when using {@link Autowired}
+     * picks the best matched bean based on the input class(could return a subclass) and the settings from {@link BeanManagerSettings}. This is the preferred method to get a bean because it is the most flexible
      * @param cls the class of the bean you want
      * @param allowRawBean weather the bean can be raw(meaning not all @Autowired methods have been called)
-     * @param allowNull weather it can return null if it cant find an appropriate bean. this method will throw an error if this is false and it cant find a valid bean
+     * @param allowNull weather it can return null if it cant find an appropriate bean. this method will throw an error if this is false, and it cant find a valid bean
      * @return the bean that best matches the input class
      * @param <T> the type of the bean
      */
     public <T> T getBestMatch(Class<T> cls, boolean allowRawBean, boolean allowNull){
         switch (settings.getDuplicateAutoWireStrategy()){
             case FIRST :
-                return getFirstMatch(cls, allowRawBean, allowNull, getWithType(cls).collect(Collectors.toList()));
+                return getFirstMatch(cls, allowRawBean, allowNull, getWithType(cls, beans.values().stream().map(Map.Entry::getKey)).collect(Collectors.toList()));
             case RANDOM :
-                return getRandomMatch(cls, allowRawBean, allowNull, getWithType(cls).collect(Collectors.toList()));
+                return getRandomMatch(cls, allowRawBean, allowNull, getWithType(cls, beans.values().stream().map(Map.Entry::getKey)).collect(Collectors.toList()));
             case PROFILE :
-                List<T> profiledBeans = getWithProfile(getWithType(cls)).collect(Collectors.toList());
+                List<T> profiledBeans = getWithProfile(getWithType(cls, beans.values().stream().map(Map.Entry::getKey))).collect(Collectors.toList());
 
                 if(profiledBeans.isEmpty()){
                     switch (settings.getNoProfileFallbackStrategy()){
                         case FIRST :
-                            return getFirstMatch(cls, allowRawBean, allowNull, getWithType(cls).collect(Collectors.toList()));
+                            return getFirstMatch(cls, allowRawBean, allowNull, getWithType(cls, beans.values().stream().map(Map.Entry::getKey)).collect(Collectors.toList()));
                         case RANDOM :
-                            return getRandomMatch(cls, allowRawBean, allowNull, getWithType(cls).collect(Collectors.toList()));
+                            return getRandomMatch(cls, allowRawBean, allowNull, getWithType(cls, beans.values().stream().map(Map.Entry::getKey)).collect(Collectors.toList()));
                         case EXCEPTION : throw new ExceptionInInitializerError("there were no beans of type " + cls.getName() + " with the profile '" + settings.getProfile() + "' \n[TIP] add a bean of the right type with a @Profile("+settings.getProfile()+") annotation or set noProfileFallbackStrategy to FIRST or RANDOM");
                     }
                 }
@@ -344,10 +222,6 @@ public class BeanManager {
 
     private<T> Stream<T> getWithType(Class<T> type, Stream<Object> repo){
         return repo.filter(type::isInstance).map(bean -> (T) bean);
-    }
-
-    private<T> Stream<T> getWithType(Class<T> type){
-        return getWithType(type, getBeansAsStream());
     }
 
     private<T> Stream<T> getWithProfile(Stream<T> repo){
