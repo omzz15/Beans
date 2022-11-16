@@ -4,21 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7b62fc31-ec9c-4a4e-94be-8f8d714b71de" name="Changes" comment="updated pom">
-      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/Bean.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/PackageBeanManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/core/Autowired.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/core/BeanManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/core/BeanManagerSettings.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/core/ParamSettings.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/core/Profile.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/core/Utils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/example/DefaultBean.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/example/ProductionBean.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/example/SnapshotBean.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/example/TestBean1.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/example/TestBean2.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/example/TestBean3.java" beforeDir="false" />
+    <list default="true" id="7b62fc31-ec9c-4a4e-94be-8f8d714b71de" name="Changes" comment="updated to work without reflection">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/core/BeanManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/core/BeanManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/example/Example.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/example/Example.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -169,17 +159,6 @@
     <MESSAGE value="V1 of bean manager is good to go" />
     <MESSAGE value="added get instance" />
     <option name="LAST_COMMIT_MESSAGE" value="added get instance" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/test/java/example/Example.java</url>
-          <line>9</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Beans$BeansTest.ic" NAME="BeansTest Coverage Results" MODIFIED="1664637709679" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />

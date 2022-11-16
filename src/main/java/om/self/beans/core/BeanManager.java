@@ -156,11 +156,31 @@ public class BeanManager {
      * picks the best matched bean based on the input class(could return a subclass) and the settings from {@link BeanManagerSettings}. This is the preferred method to get a bean because it is the most flexible
      * @param cls the class of the bean you want
      * @param allowRawBean weather the bean can be raw(meaning not all @Autowired methods have been called)
+     * @return the bean that best matches the input class
+     * @param <T> the type of the bean
+     */
+    public <T> T getBestMatch(Class<T> cls, boolean allowRawBean){
+        return getBestMatch(cls, allowRawBean, false);
+    }
+
+    /**
+     * similar to {@link BeanManager#getBestMatch(Class, boolean)} but if no valid bean is found it will return an empty optional instead of throwing an error
+     */
+    public <T> Optional<T> tryGetBestMatch(Class<T> cls, boolean allowRawBean){
+        T val = getBestMatch(cls, allowRawBean, true);
+        if(val == null) return Optional.empty();
+        return Optional.of(val);
+    }
+
+    /**
+     * picks the best matched bean based on the input class(could return a subclass) and the settings from {@link BeanManagerSettings}. This is the preferred method to get a bean because it is the most flexible
+     * @param cls the class of the bean you want
+     * @param allowRawBean weather the bean can be raw(meaning not all @Autowired methods have been called)
      * @param allowNull weather it can return null if it cant find an appropriate bean. this method will throw an error if this is false, and it cant find a valid bean
      * @return the bean that best matches the input class
      * @param <T> the type of the bean
      */
-    public <T> T getBestMatch(Class<T> cls, boolean allowRawBean, boolean allowNull){
+    public  <T> T getBestMatch(Class<T> cls, boolean allowRawBean, boolean allowNull){
         switch (settings.getDuplicateAutoWireStrategy()){
             case FIRST :
                 return getFirstMatch(cls, allowRawBean, allowNull, getWithType(cls, beans.values().stream().map(Map.Entry::getKey)).collect(Collectors.toList()));
