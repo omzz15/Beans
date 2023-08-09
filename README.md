@@ -28,7 +28,7 @@ There are multiple ways to use this library, but it was primarily made for Maven
 3. Add the library to the dependencies section:
     ```
     dependencies {
-        implementation 'io.github.omzz15:supplier:2.0.0-FTCRELEASE'
+        implementation 'io.github.omzz15:beans:2.2.0-FTCRELEASE'
     }
     ```
 4. Enjoy :)
@@ -40,8 +40,8 @@ There are multiple ways to use this library, but it was primarily made for Maven
    ```
    <dependency>
       <groupId>io.github.omzz15</groupId>
-      <artifactId>supplier</artifactId>
-      <version>2.0.0-FTCRELEASE</version>
+      <artifactId>beans</artifactId>
+      <version>2.2.0-FTCRELEASE</version>
    </dependency>
    ```
 3. Enjoy :)
