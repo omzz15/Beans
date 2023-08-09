@@ -5,9 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7b62fc31-ec9c-4a4e-94be-8f8d714b71de" name="Changes" comment="updated to work without reflection">
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/core/BeanLoad.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/core/BeanLoad.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/core/BeanManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/core/BeanManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/core/BeanManagerSettings.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/core/BeanManagerSettings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/core/Profile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/core/Profile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/core/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/core/Utils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/example/Example.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/example/Example.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -26,6 +32,20 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "omzz15"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="46b7a6a8-9d4f-40a6-b108-f363090fd41e" />
+        <option name="url" value="https://github.com/omzz15/beans" />
+      </UrlAndAccount>
+    </option>
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -35,19 +55,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Development/Plaforms/Java/Library/Beans&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "ftc__master",
+    "last_opened_file_path": "C:/Development/Plaforms/Java/Library/Beans",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "show.migrate.to.gradle.popup": "false"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Development\beans\src\main\java\om\self\beans" />

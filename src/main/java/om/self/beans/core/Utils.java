@@ -2,6 +2,9 @@ package om.self.beans.core;
 
 import java.lang.annotation.Annotation;
 
+/**
+ * A class that contains some utility functions to help the library
+ */
 public class Utils {
     /**
      * gets an annotation if it is present in the specified class or any of its parent/super classes

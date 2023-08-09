@@ -4,14 +4,19 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * This is the main class that handles all the beans, loading them,
+ * and finding the best match based on the profile and settings
+ */
 public class BeanManager {
 
-//    private static final BeanManager instance = new BeanManager();
-
+    /**
+     * this is the settings for the bean manager including how to handle duplicates or missing beans
+     */
     private BeanManagerSettings settings;
 
     /**
-     * this stores all the beans and weather they are loaded in relation to the beans class
+     * this stores all the beans and weather they are loaded in relation to the class of the bean
      */
     private final Hashtable<Class<?>, Map.Entry<Object, BeanLoad>> beans = new Hashtable<>();
 
@@ -23,10 +28,18 @@ public class BeanManager {
     ///////////////
     //CONSTRUCTOR//
     ///////////////
+
+    /**
+     * Default constructor that has default settings
+     */
     public BeanManager(){
         settings = new BeanManagerSettings();
     }
 
+    /**
+     * constructor that sets custom settings
+     * @param settings the settings you want to use
+     */
     public BeanManager(BeanManagerSettings settings) {
         this.settings = settings;
     }
@@ -36,10 +49,19 @@ public class BeanManager {
     ///////////////////////
 
     //----------settings----------//
+
+    /**
+     * gets the settings for the bean manager
+     * @return {@link #settings}
+     */
     public BeanManagerSettings getSettings() {
         return settings;
     }
 
+    /**
+     * sets the settings for the bean manager
+     * @param settings the settings you want to use
+     */
     public void setSettings(BeanManagerSettings settings) {
         if (settings == null) throw new IllegalArgumentException("settings can not be null");
         this.settings = settings;
@@ -51,7 +73,7 @@ public class BeanManager {
      * adds a bean to the repository {@link BeanManager#beans}
      * @param bean the bean you want to add
      * @param shouldLoad whether the bean should load when {@link BeanManager#load()} is called
-     * @param isLoaded whether the bean is already loaded(this prevents {@link BeanManager#loadBean(Object, Runnable)} from being called on the bean and will prevent it from being called in {@link BeanManager#load()} event if shouldLoad is true)
+     * @param isLoaded whether the bean is already loaded (this prevents {@link BeanManager#loadBean(Object, Runnable)} from being called on the bean and will prevent it from being called in {@link BeanManager#load()} event if shouldLoad is true)
      */
     public void addBean(Object bean, Runnable loadFunction, boolean shouldLoad, boolean isLoaded){
         if(isBeanThere(bean.getClass())){
@@ -131,17 +153,43 @@ public class BeanManager {
     //Load//
     ////////
     //----------All----------//
+    /**
+     * loads all the beans that have been added to {@link #loadingBeans}
+     * (basically all the beans
+     * that have been added with {@link #addBean(Object, Runnable, boolean, boolean)} with shouldLoad set to true
+     */
     public void load(){
-        loadingBeans.forEach(this::loadBeanInternal);
+        for (Object bean: loadingBeans) {
+            try{
+                loadBeanInternal(bean);
+            } catch (StackOverflowError e){
+                throw new StackOverflowError("StackOverflowError while loading '" + bean + "' of " + bean.getClass() + ", this is most likely caused by a circular dependency.\nTIP: try settings allow raw beans to true in the code that loads this bean (load function)");
+            }
+        }
+
         loadingBeans.clear();
     }
 
     //----------Bean----------//
+
+    /**
+     * This will add a bean using {@link #addBean(Object, Runnable, boolean, boolean)} then immediately load it with {@link #loadBeanInternal(Object)}
+     * @param bean the bean you want to add and load
+     * @param loadFunction the function that will be called when the bean is loaded
+     * @return the bean that was passed in after it is loaded
+     * @param <T> the type of the bean
+     */
     public <T> T loadBean(T bean, Runnable loadFunction){
         addBean(bean, loadFunction, false, false);
         return loadBeanInternal(bean);
     }
 
+    /**
+     * This will run the load function (from {@link BeanLoad#load()}) for the bean if it is not already loaded
+     * @param bean the bean you want to load
+     * @return the bean that was passed in after it is loaded
+     * @param <T> the type of the bean
+     */
     private<T> T loadBeanInternal(T bean){
         if(isBeanLoaded(bean)) return bean;
 
@@ -153,9 +201,9 @@ public class BeanManager {
     //----------Parameter----------//
 
     /**
-     * picks the best matched bean based on the input class(could return a subclass) and the settings from {@link BeanManagerSettings}. This is the preferred method to get a bean because it is the most flexible
-     * @param cls the class of the bean you want
-     * @param allowRawBean weather the bean can be raw(meaning not all @Autowired methods have been called)
+     * An implementation on {@link #getBestMatch(Class, boolean, boolean)} that will throw an error if no valid bean is found
+     * @param cls the class of the bean you want (it may return a subclass)
+     * @param allowRawBean weather the bean can be raw (meaning the bean has not been loaded yet)
      * @return the bean that best matches the input class
      * @param <T> the type of the bean
      */
@@ -164,7 +212,13 @@ public class BeanManager {
     }
 
     /**
-     * similar to {@link BeanManager#getBestMatch(Class, boolean)} but if no valid bean is found it will return an empty optional instead of throwing an error
+     * Similar to {@link BeanManager#getBestMatch(Class, boolean)} but
+     * if no valid bean is found it will return an empty optional instead of throwing an error.
+     *
+     * @param cls the class of the bean you want (it may return a subclass)
+     * @param allowRawBean weather the bean can be raw (meaning the bean has not been loaded yet)
+     * @param <T> the type of the bean
+     * @return an optional containing the bean that best matches the input class, or an empty optional if no valid bean is found
      */
     public <T> Optional<T> tryGetBestMatch(Class<T> cls, boolean allowRawBean){
         T val = getBestMatch(cls, allowRawBean, true);
@@ -173,15 +227,17 @@ public class BeanManager {
     }
 
     /**
-     * picks the best matched bean based on the input class(could return a subclass) and the settings from {@link BeanManagerSettings}. This is the preferred method to get a bean because it is the most flexible
+     * Picks the best matched bean based on the input class
+     * (could return a subclass) and the settings from {@link BeanManagerSettings}.
+     * This is the preferred method to get a bean because it is the most flexible
      * @param cls the class of the bean you want
-     * @param allowRawBean weather the bean can be raw(meaning not all @Autowired methods have been called)
+     * @param allowRawBean weather the bean can be raw (meaning the bean has not been loaded yet)
      * @param allowNull weather it can return null if it cant find an appropriate bean. this method will throw an error if this is false, and it cant find a valid bean
      * @return the bean that best matches the input class
      * @param <T> the type of the bean
      */
     public  <T> T getBestMatch(Class<T> cls, boolean allowRawBean, boolean allowNull){
-        switch (settings.getDuplicateAutoWireStrategy()){
+        switch (settings.getAutoWireStrategy()){
             case FIRST :
                 return getFirstMatch(cls, allowRawBean, allowNull, getWithType(cls, beans.values().stream().map(Map.Entry::getKey)).collect(Collectors.toList()));
             case RANDOM :
@@ -214,6 +270,15 @@ public class BeanManager {
         throw new ExceptionInInitializerError("there was an unknown error trying to run getBestMatch(cls: " + cls + ", allowRaw: " + allowRawBean + ", allowNull: " + allowNull + ")");
     }
 
+    /**
+     * Used to get the first valid bean in a collection of beans (repo)
+     * @param cls the class of the bean you want
+     * @param allowRawBean weather the bean can be raw (meaning the bean has not been loaded yet)
+     * @param allowNull weather it can return null if it cant find an appropriate bean (if false it will throw an error)
+     * @param repo the collection of beans to search through
+     * @return the first valid bean in the collection
+     * @param <T> the type of the bean
+     */
     private<T> T getFirstMatch(Class<T> cls, boolean allowRawBean, boolean allowNull, Collection<T> repo){
         //check for null
         if(repo.isEmpty())
@@ -229,6 +294,15 @@ public class BeanManager {
         return loadBeanInternal(repo.stream().findFirst().get());
     }
 
+    /**
+     * Used to get a random valid bean in a collection of beans (repo)
+     * @param cls the class of the bean you want
+     * @param allowRawBean weather the bean can be raw (meaning the bean has not been loaded yet)
+     * @param allowNull weather it can return null if it cant find an appropriate bean (if false it will throw an error if a bean is not found)
+     * @param repo the collection of beans to search through
+     * @return a random valid bean in the collection
+     * @param <T> the type of the bean
+     */
     private<T> T getRandomMatch(Class<T> cls, boolean allowRawBean, boolean allowNull, Collection<T> repo){
         //check for null
         if(repo.isEmpty())
@@ -240,14 +314,33 @@ public class BeanManager {
         return loadBeanInternal(getRandomElement(repo));
     }
 
+    /**
+     * Method to filter a stream of objects to a stream of a specific type
+     * @param type the type to filter to
+     * @param repo the stream of objects to filter
+     * @return a stream of the type specified
+     * @param <T> the type to filter to
+     */
     private<T> Stream<T> getWithType(Class<T> type, Stream<Object> repo){
         return repo.filter(type::isInstance).map(bean -> (T) bean);
     }
 
+    /**
+     * Method to filter a stream to a stream that have the profile tag
+     * @param repo the stream to filter
+     * @return a stream of beans that have the profile tag
+     * @param <T> the type of the stream to filter
+     */
     private<T> Stream<T> getWithProfile(Stream<T> repo){
         return repo.filter((bean) -> containsProfile(bean.getClass()));
     }
 
+    /**
+     * Method to get a random element from a collection
+     * @param repo the collection to get the element from
+     * @return a random element from the collection
+     * @param <T> the type of the collection
+     */
     private<T> T getRandomElement (Collection<T> repo) {
         return repo.stream().skip((long)(Math.random() * repo.size())).findFirst().get();
     }
@@ -256,6 +349,12 @@ public class BeanManager {
     //////////
     //Checks//
     //////////
+
+    /**
+     * Method to check if a bean has a profile tag
+     * @param bean the bean class to check
+     * @return weather the bean has a profile tag
+     */
     private boolean containsProfile(Class<?> bean){
         Profile profile;
         if(settings.recursivelyCheckForProfile)profile = Utils.getAnnotationRecursively(bean, Profile.class);
@@ -267,10 +366,22 @@ public class BeanManager {
     //////////
     //Errors//
     //////////
+
+    /**
+     * Method to create an error for when a bean is not found
+     * @param cls the class of the bean that was not found
+     * @param reason the reason the bean was not found
+     * @return an error with the class and reason
+     */
     private ExceptionInInitializerError getNoBeanForParamError(Class<?> cls, String reason) {
         return new ExceptionInInitializerError("there was no bean of '" + cls.getName() + "' for the following reason: " + reason);
     }
 
+    /**
+     * Method to create an error for when duplicate beans are found
+     * @param bean the bean that is a duplicate
+     * @return an error with the bean
+     */
     private IllegalArgumentException getDuplicateBeanException(Object bean){
         return new IllegalArgumentException("A instance of '" + bean.getClass().getName() + "' already exists in beans so bean '"+ bean +"' could not be added");
     }
