@@ -25,6 +25,11 @@ public class BeanManager {
      */
     private final Set<Object> loadingBeans = new HashSet<>();
 
+    /**
+     * Stores all the beans that are currently being loaded to prevent infinite loops
+     */
+    private final Set<Class<?>> inLoading = new HashSet<>();
+
     ///////////////
     //CONSTRUCTOR//
     ///////////////
@@ -193,7 +198,9 @@ public class BeanManager {
     private<T> T loadBeanInternal(T bean){
         if(isBeanLoaded(bean)) return bean;
 
+        inLoading.add(bean.getClass());
         beans.get(bean.getClass()).getValue().load();
+        inLoading.remove(bean.getClass());
 
         return bean;
     }

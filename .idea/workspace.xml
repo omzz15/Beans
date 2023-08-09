@@ -4,17 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7b62fc31-ec9c-4a4e-94be-8f8d714b71de" name="Changes" comment="updated to work without reflection">
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="7b62fc31-ec9c-4a4e-94be-8f8d714b71de" name="Changes" comment="fixed install on README.md">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/core/BeanLoad.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/core/BeanLoad.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/core/BeanManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/core/BeanManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/core/BeanManagerSettings.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/core/BeanManagerSettings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/core/Profile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/core/Profile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/om/self/beans/core/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/om/self/beans/core/Utils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/example/Example.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/example/Example.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,12 +25,12 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "omzz15"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;omzz15&quot;
   }
-}]]></component>
+}</component>
   <component name="GithubPullRequestsUISettings">
     <option name="selectedUrlAndAccountId">
       <UrlAndAccount>
@@ -49,26 +42,29 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 1
+}]]></component>
   <component name="ProjectId" id="2ErR8RVcUQq1CGhrwUtl2jFGeiE" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "ftc__master",
-    "last_opened_file_path": "C:/Development/Plaforms/Java/Library/Beans",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "show.migrate.to.gradle.popup": "false"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;ftc__master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Development/Plaforms/Java/Library/Beans&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Development\beans\src\main\java\om\self\beans" />
@@ -76,7 +72,7 @@
   </component>
   <component name="RunManager">
     <configuration name="BeansTest" type="Application" factoryName="Application">
-      <option name="MAIN_CLASS_NAME" value="example.Example" />
+      <option name="MAIN_CLASS_NAME" value="examples.Example" />
       <module name="Beans" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -155,7 +151,23 @@
       <option name="project" value="LOCAL" />
       <updated>1664926984644</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="updated everything for FTC">
+      <option name="closed" value="true" />
+      <created>1691551906097</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1691551906097</updated>
+    </task>
+    <task id="LOCAL-00011" summary="fixed install on README.md">
+      <option name="closed" value="true" />
+      <created>1691583906529</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1691583906529</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -179,7 +191,9 @@
     <MESSAGE value="added tags to make more custom beans" />
     <MESSAGE value="V1 of bean manager is good to go" />
     <MESSAGE value="added get instance" />
-    <option name="LAST_COMMIT_MESSAGE" value="added get instance" />
+    <MESSAGE value="updated everything for FTC" />
+    <MESSAGE value="fixed install on README.md" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed install on README.md" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Beans$BeansTest.ic" NAME="BeansTest Coverage Results" MODIFIED="1664637709679" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />

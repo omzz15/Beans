@@ -1,4 +1,4 @@
-**This is the FTC version of the library meaning this uses java 8 and has instructions for installing this to an FTC project. For the normal version go [here](https://github.com/omzz15/beans)**
+**This is the FTC version of the library, meaning this uses java 8 and has instructions for installing this to an FTC project. For the normal version go [here](https://github.com/omzz15/beans)**
 
 # Java Beans
 
@@ -12,7 +12,7 @@ Inspired by the dependency injection in Java Spring Boot, this is a standalone l
 ## Future Additions
 - More examples
 - Better dependency injection
-- Community Requests(your input is always important)
+- Community Requests (your input is always important)
 
 # How To Install
 There are multiple ways to use this library, but it was primarily made for Maven/Gradle so that will be the most up to date. There will also be releases on GitHub, but I would recommend using Maven or gradle as FTC projects already use them meaning you only need to add a few lines.
