@@ -1,5 +1,3 @@
-**This is the FTC version of the library, meaning this uses java 8 and has instructions for installing this to an FTC project. For the normal version go [here](https://github.com/omzz15/beans)**
-
 # Java Beans
 
 Inspired by the dependency injection in Java Spring Boot, this is a standalone library that aims to provide similar functionality to it while being easier to use. This library uses annotations to automatically create and load beans. This is useful for managing dependencies and easily switching versions using profiles.
